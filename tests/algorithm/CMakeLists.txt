@@ -7,3 +7,8 @@ add_executable(
     array.exe
     ${CMAKE_CURRENT_SOURCE_DIR}/array.c
 )
+
+add_executable(
+    rbtree.exe
+    ${CMAKE_CURRENT_SOURCE_DIR}/rbtree.c
+)

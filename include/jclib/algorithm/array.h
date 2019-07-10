@@ -120,12 +120,12 @@ int FUNC(index_of)(const TYPEDEF* array, TYPE v);
 
 
 int FUNC(init)(TYPEDEF* array, size_t reserved) {
+    array->length = 0;
+    array->reserved = reserved;
     array->data = malloc(reserved * sizeof(TYPE));
     if (reserved > 0 && !array->data) {
         return -1;
     }
-    array->length = 0;
-    array->reserved = reserved;
     return 0;
 }
 
