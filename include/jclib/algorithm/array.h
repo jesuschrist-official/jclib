@@ -1,5 +1,18 @@
 /*
  * jclib/algorithm/array.h - Dynamic array generation file
+ *
+ * Dynamic array are arrays allocated on the heap (XXX now).
+ * This module provides common functions to deal with such arrays, taking care
+ * of array growth for the programmer.
+ *
+ * A dynamic array has an allocated size and an used size. The allocated size
+ * (`reserved` field) is the number of element that can fit at `data`, and
+ * the used size (`length` field) is the current number of elements fitting
+ * at the start of `data`.
+ *
+ * If `reserved` is zero, but data is not NULL, the array doesn't owns memory
+ * pointed by `data`. In such case, subsequent calls to array functions causing
+ * data alteration will fail, and an error code will be returned.
  */
 // Checks ---------------------------------------------------------------------
 #ifndef JCARRAY_TYPE
@@ -51,6 +64,9 @@ TYPEDEF* FUNC(wipe)(TYPEDEF* array);
 
 
 int FUNC(from)(TYPEDEF* array, const TYPE* data, size_t count);
+
+
+TYPEDEF FUNC(static)(TYPE* data, size_t count);
 
 
 size_t FUNC(length)(const TYPEDEF* array);
@@ -131,9 +147,13 @@ int FUNC(index_of)(const TYPEDEF* array, TYPE v);
 int FUNC(init)(TYPEDEF* array, size_t reserved) {
     array->length = 0;
     array->reserved = reserved;
-    array->data = malloc(reserved * sizeof(TYPE));
-    if (reserved > 0 && !array->data) {
-        return -1;
+    if (reserved > 0) {
+        array->data = malloc(reserved * sizeof(TYPE));
+        if (!array->data) {
+            return -1;
+        }
+    } else {
+        array->data = NULL;
     }
     return 0;
 }
@@ -152,6 +172,15 @@ int FUNC(from)(TYPEDEF* array, const TYPE* data, size_t count) {
     memcpy(array->data, data, count * sizeof(TYPE));
     array->length = count;
     return 0;
+}
+
+
+TYPEDEF FUNC(static)(TYPE* data, size_t count) {
+    return (TYPEDEF){
+        .data = data,
+        .length = count,
+        .reserved = 0
+    };
 }
 
 
@@ -192,7 +221,15 @@ void FUNC(set)(TYPEDEF* array, size_t i, TYPE v) {
 }
 
 
+static int FUNC(is_owner)(const TYPEDEF* array) {
+    return !array->data || array->reserved;
+}
+
+
 static int FUNC(resize)(TYPEDEF* array) {
+    if (!FUNC(is_owner)(array)) {
+        return -1;
+    }
     size_t new_size = array->reserved * 2 + 1;
     TYPE* new_data = realloc(array->data, new_size * sizeof(TYPE));
     if (!new_data) {
@@ -231,6 +268,9 @@ static void FUNC(lshift)(TYPEDEF* array, size_t idx, size_t size) {
 
 
 int FUNC(prepend)(TYPEDEF* array, TYPE v) {
+    if (!FUNC(is_owner)(array)) {
+        return -1;
+    }
     if (FUNC(rshift)(array, 0, 1) < 0) {
         return -1;
     }
@@ -240,6 +280,9 @@ int FUNC(prepend)(TYPEDEF* array, TYPE v) {
 
 
 int FUNC(append)(TYPEDEF* array, TYPE v) {
+    if (!FUNC(is_owner)(array)) {
+        return -1;
+    }
     if (array->length == array->reserved) {
         if (FUNC(resize)(array) < 0) {
             return -1;
@@ -251,6 +294,9 @@ int FUNC(append)(TYPEDEF* array, TYPE v) {
 
 
 int FUNC(insert)(TYPEDEF* array, size_t i, TYPE v) {
+    if (!FUNC(is_owner)(array)) {
+        return -1;
+    }
     if (FUNC(rshift)(array, i, 1) < 0) {
         return -1;
     }
@@ -260,6 +306,9 @@ int FUNC(insert)(TYPEDEF* array, size_t i, TYPE v) {
 
 
 TYPE FUNC(remove)(TYPEDEF* array, size_t i) {
+    if (!FUNC(is_owner)(array)) {
+        return (TYPE)0;
+    }
     TYPE v = FUNC(get)(array, i);
     FUNC(lshift)(array, i, 1);
     return v;

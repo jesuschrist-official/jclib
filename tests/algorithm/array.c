@@ -244,4 +244,15 @@ JCTEST_FUNC("array_index_of") {
 }
 
 
+JCTEST_FUNC("array_static") {
+    int_array_t array = int_array_static((int[]){1, 2, 3, 4, 5}, 5);
+    JCTEST_ASSERT(int_array_prepend(&array, 0) < 0);
+    JCTEST_ASSERT(int_array_append(&array, 0) < 0);
+    JCTEST_ASSERT(int_array_insert(&array, 0, 0) < 0);
+    JCTEST_ASSERT(int_array_remove(&array, 0) == 0);
+    JCTEST_ASSERT(int_array_pop_back(&array) == 0);
+    JCTEST_ASSERT(int_array_pop_front(&array) == 0);
+}
+
+
 JCTEST_END
