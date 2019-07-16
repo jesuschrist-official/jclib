@@ -554,6 +554,7 @@ int FUNC(remove)(TYPEDEF** root, TYPE v) {
 
     #define JCARRAY_NAME    node_stack
     #define JCARRAY_TYPE    const void*
+    #define JCARRAY_PROTOTYPE
     #define JCARRAY_IMPLEMENTATION
     #include "jclib/algorithm/array.h"
 

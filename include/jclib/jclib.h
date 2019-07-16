@@ -6,9 +6,7 @@
 
 
 #include <stdbool.h>
-
-
-#define offsetof(st, m) __builtin_offsetof(st, m)
+#include <stddef.h>
 
 
 #define containerof(ptr, st, m) \

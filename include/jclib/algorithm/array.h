@@ -25,10 +25,15 @@
 #define JCARRAY_COMMON
 
 
+#define ARRAY_ARG(_a) (_a).data, (_a).length
+
+
 #endif
 
 
 // Prototype ------------------------------------------------------------------
+#ifdef JCARRAY_PROTOTYPE
+#undef JCARRAY_PROTOTYPE
 #include <stddef.h>
 
 
@@ -45,7 +50,7 @@ int FUNC(init)(TYPEDEF* array, size_t reserved);
 TYPEDEF* FUNC(wipe)(TYPEDEF* array);
 
 
-int FUNC(init_with)(TYPEDEF* array, const TYPE* data, size_t count);
+int FUNC(from)(TYPEDEF* array, const TYPE* data, size_t count);
 
 
 size_t FUNC(length)(const TYPEDEF* array);
@@ -87,8 +92,12 @@ TYPE FUNC(pop_front)(TYPEDEF* array);
 int FUNC(index_of)(const TYPEDEF* array, TYPE v);
 
 
+#endif
+
+
 // Implementation -------------------------------------------------------------
 #ifdef JCARRAY_IMPLEMENTATION
+#undef JCARRAY_IMPLEMENTATION
 
 
 #ifndef JCARRAY_EQ
@@ -136,7 +145,7 @@ TYPEDEF* FUNC(wipe)(TYPEDEF* array) {
 }
 
 
-int FUNC(init_with)(TYPEDEF* array, const TYPE* data, size_t count) {
+int FUNC(from)(TYPEDEF* array, const TYPE* data, size_t count) {
     if (FUNC(init)(array, count) < 0) {
         return -1;
     }
