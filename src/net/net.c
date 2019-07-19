@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <netdb.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
@@ -71,6 +72,57 @@ socket_t socket_create_client_tcp(const char* hostname, int port) {
     }
 
     return sock;
+}
+
+
+bool socket_has_data(socket_t sock) {
+    fd_set set;
+    FD_ZERO(&set);
+    FD_SET(sock, &set);
+    struct timeval tv = {
+        .tv_sec = 0,
+        .tv_usec = 0,
+    };
+    if (select(sock + 1, &set, NULL, NULL, &tv) > 0) {
+        return true;
+    }
+    return false;
+}
+
+
+net_status_t socket_read(socket_t sock, string_t* str, const char* stop) {
+    char buf[1024];
+    ssize_t recv_len;
+    string_init(str, 0);
+    while (1) {
+        recv_len = recv(sock, buf, sizeof(buf) - 1, MSG_PEEK);
+        if (recv_len < 0) {
+            goto error;
+        } else
+        if (!recv_len) {
+            break;
+        }
+        buf[recv_len] = '\0';
+
+        // Check if we get a stop delimiter
+        char* end = strstr(buf, stop);
+        if (end) {
+            end += strlen(stop);
+            *end = '\0';
+            recv_len = end - buf;
+        }
+        string_cat(str, &STRING(buf));
+
+        // Flush the socket
+        recv(sock, buf, recv_len, 0);
+        if (end) {
+            break;
+        }
+    }
+    return NET_SUCCESS;
+  error:
+    string_wipe(str);
+    return NET_ERROR;
 }
 
 

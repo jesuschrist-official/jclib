@@ -5,6 +5,12 @@
 #define _jclib_net_net_h_
 
 
+#include <stdbool.h>
+#include <stdlib.h>
+
+#include "jclib/string.h"
+
+
 typedef int socket_t;
 
 
@@ -38,6 +44,20 @@ socket_t socket_create_server_tcp(int port, size_t max_connections);
  * Returns a valid socket in case of success or `NET_ERROR` otherwise.
  */
 socket_t socket_create_client_tcp(const char* hostname, int port);
+
+
+/*
+ * Says whereas the given socket as pending data.
+ */
+bool socket_has_data(socket_t sock);
+
+
+/*
+ * Pull data from TCP client socket, and stores it in the given string.
+ * This string must be wiped after use.
+ * Returns `NET_ERROR` on error.
+ */
+net_status_t socket_read(socket_t sock, string_t* str, const char* stop);
 
 
 /*
