@@ -4,3 +4,5 @@ add_library(
 )
 
 add_subdirectory(net)
+
+install(TARGETS jclib DESTINATION lib)
