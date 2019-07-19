@@ -93,6 +93,9 @@ int FUNC(prepend)(TYPEDEF* array, TYPE v);
 int FUNC(append)(TYPEDEF* array, TYPE v);
 
 
+int FUNC(appendm)(TYPEDEF* array, const TYPE* values, size_t count);
+
+
 int FUNC(insert)(TYPEDEF* array, size_t i, TYPE v);
 
 
@@ -289,6 +292,21 @@ int FUNC(append)(TYPEDEF* array, TYPE v) {
         }
     }
     array->data[array->length++] = v;
+    return 0;
+}
+
+
+int FUNC(appendm)(TYPEDEF* array, const TYPE* values, size_t count) {
+    if (!FUNC(is_owner)(array)) {
+        return -1;
+    }
+    while (array->reserved < array->length + count) {
+        if (FUNC(resize)(array) < 0) {
+            return -1;
+        }
+    }
+    memcpy(array->data + array->length, values, count * sizeof(TYPE));
+    array->length += count;
     return 0;
 }
 

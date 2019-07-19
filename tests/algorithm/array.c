@@ -152,6 +152,19 @@ JCTEST_FUNC("array_append") {
 }
 
 
+JCTEST_FUNC("array_appendm") {
+    int_array_t array;
+    int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
+
+    int_array_appendm(&array, (int[]){6, 7, 8}, 3);
+    JCTEST_ASSERT(
+        int_array_eq_with(&array, (int[]){1, 2, 3, 4, 5, 6, 7, 8}, 8)
+    );
+
+    int_array_wipe(&array);
+}
+
+
 JCTEST_FUNC("array_insert") {
     int_array_t array;
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
@@ -248,6 +261,7 @@ JCTEST_FUNC("array_static") {
     int_array_t array = int_array_static((int[]){1, 2, 3, 4, 5}, 5);
     JCTEST_ASSERT(int_array_prepend(&array, 0) < 0);
     JCTEST_ASSERT(int_array_append(&array, 0) < 0);
+    JCTEST_ASSERT(int_array_appendm(&array, (int[]){0}, 1) < 0);
     JCTEST_ASSERT(int_array_insert(&array, 0, 0) < 0);
     JCTEST_ASSERT(int_array_remove(&array, 0) == 0);
     JCTEST_ASSERT(int_array_pop_back(&array) == 0);
