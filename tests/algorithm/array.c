@@ -12,27 +12,25 @@ JCTEST("jclib/algorithm/array")
 
 
 JCTEST_FUNC("array_init_empty") {
-    int_array_t array = {0};
+    int_array_t array cleanup(int_array_wipe) = {0};
     JCTEST_ASSERT(int_array_init(&array, 0) >= 0);
     JCTEST_ASSERT(array.length == 0);
     JCTEST_ASSERT(array.reserved == 0);
     JCTEST_ASSERT(array.data == NULL);
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_init") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     JCTEST_ASSERT(int_array_init(&array, 10) >= 0);
     JCTEST_ASSERT(array.length == 0);
     JCTEST_ASSERT(array.reserved == 10);
     JCTEST_ASSERT(array.data != NULL);
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_from") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     JCTEST_ASSERT(int_array_from(&array, (int[]){1, 2, 3, 4}, 4) >= 0);
     JCTEST_ASSERT(array.length == 4);
     JCTEST_ASSERT(array.reserved >= 4);
@@ -41,20 +39,18 @@ JCTEST_FUNC("array_from") {
     JCTEST_ASSERT(array.data[1] == 2);
     JCTEST_ASSERT(array.data[2] == 3);
     JCTEST_ASSERT(array.data[3] == 4);
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_length") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     JCTEST_ASSERT(int_array_from(&array, (int[]){1, 2, 3, 4}, 4) >= 0);
     JCTEST_ASSERT(int_array_length(&array) == 4);
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_resize") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     JCTEST_ASSERT(int_array_init(&array, 0) == 0);
     JCTEST_ASSERT(int_array_resize(&array) >= 0);
     JCTEST_ASSERT(array.reserved == 1);
@@ -62,12 +58,11 @@ JCTEST_FUNC("array_resize") {
     JCTEST_ASSERT(array.reserved == 3);
     JCTEST_ASSERT(int_array_resize(&array) >= 0);
     JCTEST_ASSERT(array.reserved == 7);
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_rshift") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     int_array_rshift(&array, 2, 3);
@@ -86,13 +81,11 @@ JCTEST_FUNC("array_rshift") {
             &array, (int[]){0, 0, 1, 2, 0, 0, 0, 3, 4, 0, 0, 5}, 12
         )
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_lshift") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(
         &array, (int[]){0, 0, 1, 2, 0, 0, 0, 3, 4, 0, 0, 5}, 12
     );
@@ -111,13 +104,11 @@ JCTEST_FUNC("array_lshift") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){1, 2, 3, 4, 5}, 5)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_prepend") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     int_array_prepend(&array, 0);
@@ -129,13 +120,11 @@ JCTEST_FUNC("array_prepend") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){-1, 0, 1, 2, 3, 4, 5}, 7)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_append") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     int_array_append(&array, 6);
@@ -147,26 +136,22 @@ JCTEST_FUNC("array_append") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){1, 2, 3, 4, 5, 6, 7}, 7)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_appendm") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     int_array_appendm(&array, (int[]){6, 7, 8}, 3);
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){1, 2, 3, 4, 5, 6, 7, 8}, 8)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_insert") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     int_array_insert(&array, 2, -1);
@@ -178,13 +163,11 @@ JCTEST_FUNC("array_insert") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){1, 2, -1, 3, -2, 4, 5}, 7)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_remove") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     JCTEST_ASSERT(int_array_remove(&array, 0) == 1);
@@ -201,13 +184,11 @@ JCTEST_FUNC("array_remove") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){2, 3}, 2)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_pop_front") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     JCTEST_ASSERT(int_array_pop_front(&array) == 1);
@@ -219,13 +200,11 @@ JCTEST_FUNC("array_pop_front") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){3, 4, 5}, 3)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_pop_back") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     JCTEST_ASSERT(int_array_pop_back(&array) == 5);
@@ -237,13 +216,11 @@ JCTEST_FUNC("array_pop_back") {
     JCTEST_ASSERT(
         int_array_eq_with(&array, (int[]){1, 2, 3}, 3)
     );
-
-    int_array_wipe(&array);
 }
 
 
 JCTEST_FUNC("array_index_of") {
-    int_array_t array;
+    int_array_t array cleanup(int_array_wipe) = {0};
     int_array_from(&array, (int[]){1, 2, 3, 4, 5}, 5);
 
     JCTEST_ASSERT(int_array_index_of(&array, 1) == 0);
@@ -252,8 +229,6 @@ JCTEST_FUNC("array_index_of") {
     JCTEST_ASSERT(int_array_index_of(&array, 4) == 3);
     JCTEST_ASSERT(int_array_index_of(&array, 5) == 4);
     JCTEST_ASSERT(int_array_index_of(&array, 6) == -1);
-
-    int_array_wipe(&array);
 }
 
 

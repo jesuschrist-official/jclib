@@ -28,6 +28,10 @@
     }
 
 
+#define cleanup(_func) \
+    __attribute__((cleanup(_func)))
+
+
 /* Optionals --------------------------------------------------------------- */
 #define opt(_type) struct opt ## _type
 
