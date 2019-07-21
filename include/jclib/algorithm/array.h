@@ -253,7 +253,7 @@ static int FUNC(rshift)(TYPEDEF* array, size_t idx, size_t size) {
     }
     for (size_t i = array->length + size - 1; i >= idx + size; i--) {
         array->data[i] = array->data[i - size];
-        array->data[i - size] = 0;
+        memset(array->data + i - size, 0, sizeof(TYPE));
     }
     array->length += size;
     return 0;
@@ -264,7 +264,7 @@ static void FUNC(lshift)(TYPEDEF* array, size_t idx, size_t size) {
     assert(array->length >= idx + size);
     for (size_t i = idx; i < array->length - size; i++) {
         array->data[i] = array->data[i + size];
-        array->data[i + size] = 0;
+        memset(array->data + i + size, 0, sizeof(TYPE));
     }
     array->length -= size;
 }
@@ -325,7 +325,9 @@ int FUNC(insert)(TYPEDEF* array, size_t i, TYPE v) {
 
 TYPE FUNC(remove)(TYPEDEF* array, size_t i) {
     if (!FUNC(is_owner)(array)) {
-        return (TYPE)0;
+        TYPE ret;
+        memset(&ret, 0, sizeof(TYPE));
+        return ret;
     }
     TYPE v = FUNC(get)(array, i);
     FUNC(lshift)(array, i, 1);
