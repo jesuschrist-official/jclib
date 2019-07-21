@@ -126,6 +126,14 @@ net_status_t socket_read(socket_t sock, string_t* str, const char* stop) {
 }
 
 
+net_status_t socket_write(socket_t sock, const string_t* str) {
+    if (send(sock, ARRAY_ARG(*str), 0) < 0) {
+        return NET_ERROR;
+    }
+    return NET_SUCCESS;
+}
+
+
 void socket_flush(socket_t sock) {
     char buf[4096];
     while (recv(sock, buf, sizeof(buf), 0) > 0) {

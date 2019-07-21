@@ -61,6 +61,13 @@ net_status_t socket_read(socket_t sock, string_t* str, const char* stop);
 
 
 /*
+ * Write the given string through the TCP client socket.
+ * Returns `NET_ERROR` on error.
+ */
+net_status_t socket_write(socket_t sock, const string_t* str);
+
+
+/*
  * Consume all data pendig on the socket input.
  */
 void socket_flush(socket_t sock);
