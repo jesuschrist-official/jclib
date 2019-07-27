@@ -4,5 +4,6 @@ add_library(
 )
 
 add_subdirectory(net)
+add_subdirectory(math)
 
 install(TARGETS jclib DESTINATION lib)
