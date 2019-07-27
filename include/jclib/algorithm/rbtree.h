@@ -553,7 +553,7 @@ int FUNC(remove)(TYPEDEF** root, TYPE v) {
     #undef FUNC
 
     #define JCARRAY_NAME    node_stack
-    #define JCARRAY_TYPE    const void*
+    #define JCARRAY_TYPE    void*
     #define JCARRAY_PROTOTYPE
     #define JCARRAY_IMPLEMENTATION
     #include "jclib/algorithm/array.h"
@@ -614,7 +614,7 @@ static void FUNC(check_rb_black_nodes)(const TYPEDEF* node) {
     node_stack_t stack; 
     node_stack_init(&stack, 0);
 
-    node_stack_append(&stack, node);
+    node_stack_append(&stack, (void*)node);
     while (node_stack_length(&stack) > 0) {
         const TYPEDEF* n = node_stack_pop_back(&stack);
         if (FUNC(is_leaf)(n)) {

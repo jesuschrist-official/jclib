@@ -41,6 +41,19 @@
 #define ARRAY_ARG(_a) (_a).data, (_a).length
 
 
+#define array_foreach(_array, _type, _ptr) \
+for (_type _ptr = (_array).data; \
+     _ptr - (_array).data < (_array).length; _ptr++)
+
+
+#define ARRAY_STATIC(_data) \
+    { \
+        .length = countof(data), \
+        .size = 0, \
+        .data = _data \
+    }
+
+
 #endif
 
 
